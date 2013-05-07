@@ -12,7 +12,8 @@
     "mocha": "",
     "chai": "",
     "jsdom": "",
-    "jquery": ""
+    "jquery": "",
+    "semver": ""
   },
   "repository": {
     "type": "git",
