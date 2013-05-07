@@ -1,0 +1,35 @@
+{
+  "name": "backbone.modelx",
+  "version": "0.0.0",
+  "description": "Model utilities for Backbone",
+  "main": "lib/index.js",
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "underscore": "~1.4.4"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.6.x",
+    "mocha": "",
+    "chai": "",
+    "jsdom": "",
+    "jquery": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andreypopp/backbone.modelx.git"
+  },
+  "homepage": "https://github.com/andreypopp/backbone.modelx",
+  "keywords": [
+    "browser",
+    "backbone",
+    "model",
+    "data",
+    "mvc"
+  ],
+  "author": {
+    "name": "Andrey Popp",
+    "email": "8mayday@gmail.com",
+    "url": "http://andreypopp.com"
+  },
+  "license": "MIT"
+}
