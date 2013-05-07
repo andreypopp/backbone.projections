@@ -10,53 +10,46 @@ class CollectionProjection extends Collection
   # sync: -> throw new Error('collection projection cannot be synced')
   # fetch: -> throw new Error('collection projection cannot be fetched')
 
+inducedOrdering = (collection) ->
+  func = (model) -> collection.indexOf(model)
+  func.induced = true
+  func
+
 class exports.CappedCollection extends CollectionProjection
 
   constructor: (underlying, options = {}) ->
     this.underlying = underlying
     this.model = underlying.model
-    this.comparator = options.comparator
+    this.comparator = options.comparator or inducedOrdering(underlying)
     this.options = extend {cap: 5}, underlying.options, options
     super(this._capped(this.underlying.models), options)
 
     this.listenTo this.underlying,
       reset: =>
         this.reset(this._capped(this.underlying.models))
-
       remove: (model) =>
         if this.contains(model)
           this.remove(model)
-          if this.comparator
-            capped = this._capped(this.underlying.models)
-            this.add(capped[this.options.cap - 1])
-          else
-            this.add(this.underlying.at(this.options.cap - 1))
-
+          capped = this._capped(this.underlying.models)
+          this.add(capped[this.options.cap - 1])
       add: (model) =>
         if this.length < this.options.cap
-          if this.comparator
-            this.add(model)
-          else
-            this.add(model, at: this.underlying.indexOf(model))
-        else
-          if this.comparator
-            # TODO: check if Backbone.Collection does a stable sort
-            if this.comparator(model) < this.comparator(this.last())
-              this.add(model)
-              this.remove(this.at(this.options.cap))
-          else
-            this.add(model, at: this.underlying.indexOf(model))
-            this.remove(this.at(this.options.cap))
+          this.add(model)
+        else if this.comparator(model) < this.comparator(this.last())
+          # TODO: check if Backbone.Collection does a stable sort
+          this.add(model)
+          this.remove(this.at(this.options.cap))
+      sort: =>
+        this.reset(this._capped(this.underlying.models)) if this.comparator.induced
 
   _capped: (models) ->
     models = toArray(models)
-    if this.comparator
-      models.sort (a, b) =>
-        a = this.comparator(a)
-        b = this.comparator(b)
-        if a > b then 1
-        else if a < b then -1
-        else 0
+    models.sort (a, b) =>
+      a = this.comparator(a)
+      b = this.comparator(b)
+      if a > b then 1
+      else if a < b then -1
+      else 0
     models.slice(0, this.options.cap)
 
   resize: (cap) ->
@@ -67,8 +60,29 @@ class exports.CappedCollection extends CollectionProjection
         this.remove(model)
     else if this.options.cap < cap
       this.options.cap = cap
-      if this.comparator
-        capped = this._capped(this.underlying.models)
-        this.add(capped.slice(this.length, this.options.cap))
-      else
-        this.add(this.underlying.models.slice(this.length, this.options.cap))
+      capped = this._capped(this.underlying.models)
+      this.add(capped.slice(this.length, this.options.cap))
+
+class exports.FilteredCollection extends CollectionProjection
+
+  constructor: (underlying, options = {}) ->
+    this.underlying = underlying
+    this.model = underlying.model
+    this.comparator = options.comparator or inducedOrdering(underlying)
+    this.options = extend {}, underlying.options, options
+    super(this.underlying.models.filter(this.options.filter), options)
+
+    this.listenTo this.underlying,
+      reset: =>
+        this.reset(this.underlying.models.filter(this.options.filter))
+      remove: (model) =>
+        this.remove(model) if this.contains(model)
+      add: (model) =>
+        this.add(model) if this.options.filter(model)
+      change: (model) =>
+        if this.contains(model)
+          this.remove(model) unless this.options.filter(model)
+        else
+          this.add(model) if this.options.filter(model)
+      sort: =>
+        this.sort() if this.comparator.induced
