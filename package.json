@@ -1,7 +1,7 @@
 {
-  "name": "backbone.modelx",
+  "name": "backbone.projections",
   "version": "0.2.0",
-  "description": "Model utilities for Backbone",
+  "description": "Various projections for Backbone.Collection",
   "main": "lib/index.js",
   "dependencies": {
     "backbone": "~1.0.0",
@@ -16,13 +16,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/andreypopp/backbone.modelx.git"
+    "url": "git://github.com/andreypopp/backbone.projections.git"
   },
-  "homepage": "https://github.com/andreypopp/backbone.modelx",
+  "homepage": "https://github.com/andreypopp/backbone.projections",
   "keywords": [
     "browser",
     "backbone",
     "model",
+    "collection",
+    "projection",
+    "capped",
+    "filtered",
     "data",
     "mvc"
   ],
