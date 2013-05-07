@@ -40,5 +40,4 @@ define release
   	require('fs').writeFileSync('./package.json', s);" && \
   git commit -m "release $$NEXT_VERSION" -- package.json && \
   git tag "$$NEXT_VERSION" -m "release $$NEXT_VERSION"
-  $(MAKE) publish
 endef
