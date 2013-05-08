@@ -35,7 +35,7 @@ posts from underlying `posts` collection.
 ## FilteredCollection
 
 `FilteredCollection` provides a projection which contains a subset of models
-from underlying collection which match some predicate.
+from an underlying collection which match some predicate.
 
     {FilteredCollection} = require 'backbone.projections'
 
