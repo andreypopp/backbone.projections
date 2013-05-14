@@ -528,9 +528,24 @@ describe 'FilteredCollection', ->
     diff = new Difference(underlying, subtrahend)
 
     it 'contains models from minuend', ->
-      ok diff.contains(a)
       equal diff.length, 1
+      ok diff.contains(a)
 
     it 'does not contain models from subtrahend', ->
       ok not diff.contains(b)
       ok not diff.contains(c)
+
+    it 'updates on changes in subtrahend', ->
+      subtrahend.remove(b)
+      equal diff.length, 2
+      ok diff.contains(b)
+
+      subtrahend.add(a)
+      equal diff.length, 1
+      ok not diff.contains(a)
+
+      subtrahend.reset([d])
+      equal diff.length, 3
+      ok diff.contains(a)
+      ok diff.contains(b)
+      ok diff.contains(c)
