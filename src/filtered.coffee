@@ -6,7 +6,7 @@ inducedOrdering = (collection) ->
   func.induced = true
   func
 
-class exports.FilteredCollection extends Collection
+class exports.Filtered extends Collection
 
   constructor: (underlying, options = {}) ->
     this.underlying = underlying

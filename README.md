@@ -7,57 +7,57 @@ underlying collection and stays in sync with it. That means that projection will
 respond correspondingly to `add`, `remove` and other events from an underlying
 collection.
 
-Currently there are two available projections — `CappedCollection` and
-`FilteredCollection`.
+Currently there are two available projections — `Capped` and
+`Filtered`.
 
-## SortedCollection and ReversedCollection
+## Sorted and Reversed
 
-`SortedCollection` provides a projection which maintains its own order. You are
+`Sorted` provides a projection which maintains its own order. You are
 required to provide a comparator:
 
-    {SortedCollection} = require 'backbone.projections'
+    {Sorted} = require 'backbone.projections'
 
     collection = new Collection([...])
-    sorted = new SortedCollection(collection, comparator: (m) -> m.get('score'))
+    sorted = new Sorted(collection, comparator: (m) -> m.get('score'))
 
-There's also a special case `ReversedCollection` which maintains order reversed
+There's also a special case `Reversed` which maintains order reversed
 to an underlying collection order.
 
-    {ReversedCollection} = require 'backbone.projections'
+    {Reversed} = require 'backbone.projections'
 
     collection = new Collection([...])
-    sorted = new ReversedCollection(collection)
+    sorted = new Reversed(collection)
 
-## CappedCollection
+## Capped
 
-`CappedCollection` provides a projection of a limited number of elements from an
+`Capped` provides a projection of a limited number of elements from an
 underlying collection:
 
-    {CappedCollection} = require 'backbone.projections'
+    {Capped} = require 'backbone.projections'
 
     collection = new Collection([...])
-    capped = new CappedCollection(collection, cap: 5)
+    capped = new Capped(collection, cap: 5)
 
 Using `cap` parameter you can restrict the number of models capped collection
 will contain. By default this projection tries to maintain the order of models
 induced by underlying collection but you can also pass custom comparator, for
 example
 
-    topPosts = new CappedCollection(posts,
+    topPosts = new Capped(posts,
       cap: 10
       comparator: (post) -> - post.get('likes'))
 
 will create a `topPosts` collection which will contain first 10 most "liked"
 posts from underlying `posts` collection.
 
-## FilteredCollection
+## Filtered
 
-`FilteredCollection` provides a projection which contains a subset of models
+`Filtered` provides a projection which contains a subset of models
 from an underlying collection which match some predicate.
 
-    {FilteredCollection} = require 'backbone.projections'
+    {Filtered} = require 'backbone.projections'
 
-    todaysPosts = new FilteredCollection(posts,
+    todaysPosts = new Filtered(posts,
       filter: (post) -> post.get('date').isToday())
 
 The example above will create a `todaysPosts` projection which only contains
@@ -68,11 +68,11 @@ induced by underlying collection but you can also pass custom comparator.
 
 ## Complex predicates which depend on some changing data
 
-`FilteredCollection` can be a base for complex projection which includes more
+`Filtered` can be a base for complex projection which includes more
 than a single collection, as an example we will implement a difference between
 two collections:
 
-    class Difference extends FilteredCollection
+    class Difference extends Filtered
       constructor: (underlying, subtrahend, options = {}) ->
         options.filter = (model) -> not subtrahend.contains(model)
         super(underlying, options)
@@ -97,7 +97,7 @@ But that's a quick'n'dirty way of implementing this because on each change to
 `subtrahend` the difference will reexamine entire `underlying` collection. Let's
 implement this in a more efficient way:
 
-    class EfficientDifference extends FilteredCollection
+    class EfficientDifference extends Filtered
       constructor: (underlying, subtrahend, options = {}) ->
         options.filter = (model) -> not subtrahend.contains(model)
         super(underlying, options)
@@ -112,9 +112,9 @@ implement this in a more efficient way:
 
 You can compose different projection which each other, for example
 
-    todaysPosts = new FilteredCollection(posts,
+    todaysPosts = new Filtered(posts,
       filter: (post) -> post.get('date').isToday())
-    topTodaysPosts = new CappedCollection(todaysPosts,
+    topTodaysPosts = new Capped(todaysPosts,
       cap: 5
       comparator: (post) -> - post.get('likes'))
 

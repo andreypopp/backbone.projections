@@ -1,9 +1,9 @@
 {Collection, Model} = require 'backbone'
-{CappedCollection, FilteredCollection,
-  SortedCollection, ReversedCollection} = require './src/index'
+{Capped, Filtered,
+  Sorted, Reversed} = require './src/index'
 {equal, deepEqual, ok} = require 'assert'
 
-describe 'CappedCollection', ->
+describe 'Capped', ->
 
   describe 'initialization from a collection', ->
 
@@ -19,7 +19,7 @@ describe 'CappedCollection', ->
       equal underlying.at(3).get('a'), 4
 
     it 'caps a collection', ->
-      c = new CappedCollection(underlying, cap: 2)
+      c = new Capped(underlying, cap: 2)
       equal c.length, 2
       equal c.at(0).get('a'), 1
       equal c.at(1).get('a'), 2
@@ -27,7 +27,7 @@ describe 'CappedCollection', ->
       assertUnderlying(underlying)
 
     it 'uses a comparator if provided', ->
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -51,7 +51,7 @@ describe 'CappedCollection', ->
 
     it 'caps on reset', ->
       underlying = new Collection []
-      c = new CappedCollection(underlying, cap: 2)
+      c = new Capped(underlying, cap: 2)
       equal c.length, 0
       underlying.reset(underlyingItems)
       equal c.length, 2
@@ -62,7 +62,7 @@ describe 'CappedCollection', ->
 
     it 'uses a comparator if provided', ->
       underlying = new Collection []
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 0
@@ -77,7 +77,7 @@ describe 'CappedCollection', ->
 
     it 'responds to an add event', ->
       underlying = new Collection []
-      c = new CappedCollection(underlying, cap: 2)
+      c = new Capped(underlying, cap: 2)
       equal c.length, 0
 
       underlying.add {a: 1}
@@ -111,7 +111,7 @@ describe 'CappedCollection', ->
 
     it 'responds to an add event w/ comparator provided', ->
       underlying = new Collection []
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 0
@@ -144,7 +144,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection(underlying, cap: 2)
+      c = new Capped(underlying, cap: 2)
       equal c.length, 2
       equal c.at(0).get('a'), 1
       equal c.at(0).get('a'), underlying.at(0).get('a')
@@ -169,7 +169,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -196,7 +196,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [],
         comparator: (model) -> model.get('b')
       underlying.add underlyingItems, sort: false
-      c = new CappedCollection underlying, cap: 2
+      c = new Capped underlying, cap: 2
       equal c.length, 2
       equal c.at(0).get('a'), 1
       equal c.at(0).get('a'), underlying.at(0).get('a')
@@ -212,7 +212,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [],
         comparator: (model) -> model.get('b')
       underlying.add underlyingItems, sort: false
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -228,7 +228,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection underlying, cap: 2
+      c = new Capped underlying, cap: 2
       equal c.length, 2
       equal c.at(0).get('a'), 1
       equal c.at(1).get('a'), 2
@@ -243,7 +243,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -260,7 +260,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection underlying, cap: 2
+      c = new Capped underlying, cap: 2
       equal c.length, 2
       equal c.at(0).get('a'), 1
       equal c.at(1).get('a'), 2
@@ -272,7 +272,7 @@ describe 'CappedCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new CappedCollection underlying,
+      c = new Capped underlying,
         cap: 2
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -282,7 +282,7 @@ describe 'CappedCollection', ->
       equal c.length, 1
       equal c.at(0).get('a'), 3
 
-describe 'FilteredCollection', ->
+describe 'Filtered', ->
 
   describe 'initialization from a collection', ->
 
@@ -298,7 +298,7 @@ describe 'FilteredCollection', ->
       equal underlying.at(3).get('a'), 4
 
     it 'filters a collection', ->
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 2
       equal c.at(0).get('a'), 2
@@ -307,7 +307,7 @@ describe 'FilteredCollection', ->
       assertUnderlying(underlying)
 
     it 'uses a comparator if provided', ->
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -331,7 +331,7 @@ describe 'FilteredCollection', ->
 
     it 'filters on reset', ->
       underlying = new Collection []
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 0
       underlying.reset(underlyingItems)
@@ -343,7 +343,7 @@ describe 'FilteredCollection', ->
 
     it 'uses a comparator if provided', ->
       underlying = new Collection []
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 0
@@ -360,7 +360,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 2
       equal c.at(0).get('a'), 2
@@ -378,7 +378,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -396,7 +396,7 @@ describe 'FilteredCollection', ->
 
     it 'responds to an add event', ->
       underlying = new Collection []
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 0
 
@@ -419,7 +419,7 @@ describe 'FilteredCollection', ->
 
     it 'responds to an add event w/ comparator provided', ->
       underlying = new Collection []
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 0
@@ -446,7 +446,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 2
       underlying.at(0).set('a', 1.5)
@@ -463,7 +463,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [
         {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
       ]
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -487,7 +487,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [],
         comparator: (model) -> model.get('b')
       underlying.add underlyingItems, sort: false
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
       equal c.length, 2
       equal c.at(0).get('a'), 2
@@ -500,7 +500,7 @@ describe 'FilteredCollection', ->
       underlying = new Collection [],
         comparator: (model) -> model.get('b')
       underlying.add underlyingItems, sort: false
-      c = new FilteredCollection underlying,
+      c = new Filtered underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
         comparator: (model) -> model.get('b')
       equal c.length, 2
@@ -512,7 +512,7 @@ describe 'FilteredCollection', ->
 
   describe 'implementation of a difference between two collections', ->
 
-    class Difference extends FilteredCollection
+    class Difference extends Filtered
       constructor: (underlying, subtrahend, options = {}) ->
         options.filter = (model) -> not subtrahend.contains(model)
         super(underlying, options)
@@ -553,7 +553,7 @@ describe 'FilteredCollection', ->
   
   describe 'implementation of an efficient difference between two collections', ->
 
-    class EfficientDifference extends FilteredCollection
+    class EfficientDifference extends Filtered
       constructor: (underlying, subtrahend, options = {}) ->
         options.filter = (model) -> not subtrahend.contains(model)
         super(underlying, options)
@@ -597,7 +597,7 @@ describe 'FilteredCollection', ->
       ok diff.contains(b)
       ok diff.contains(c)
 
-describe 'SortedCollection', ->
+describe 'Sorted', ->
 
   it 'initializes from a collection', ->
 
@@ -612,7 +612,7 @@ describe 'SortedCollection', ->
       equal underlying.at(2).get('a'), 3
       equal underlying.at(3).get('a'), 4
 
-    c = new SortedCollection underlying,
+    c = new Sorted underlying,
       comparator: (model) -> model.get('b')
     equal c.length, 4
     equal c.at(0).get('a'), 3
@@ -635,7 +635,7 @@ describe 'SortedCollection', ->
       equal underlying.at(3).get('a'), 4
 
     underlying = new Collection []
-    c = new SortedCollection underlying,
+    c = new Sorted underlying,
       comparator: (model) -> model.get('b')
     equal c.length, 0
     underlying.reset(underlyingItems)
@@ -650,7 +650,7 @@ describe 'SortedCollection', ->
     underlying = new Collection [
       {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
     ]
-    c = new SortedCollection underlying,
+    c = new Sorted underlying,
       comparator: (model) -> model.get('b')
     equal c.length, 4
     equal c.at(0).get('a'), 3
@@ -671,7 +671,7 @@ describe 'SortedCollection', ->
 
   it 'responds to an underlying add event', ->
     underlying = new Collection []
-    c = new SortedCollection underlying,
+    c = new Sorted underlying,
       comparator: (model) -> model.get('b')
     equal c.length, 0
 
@@ -694,7 +694,7 @@ describe 'SortedCollection', ->
     equal c.at(2).get('a'), 2
     equal c.at(3).get('a'), 4
 
-describe 'ReversedCollection', ->
+describe 'Reversed', ->
 
   it 'initializes from a collection', ->
 
@@ -709,7 +709,7 @@ describe 'ReversedCollection', ->
       equal underlying.at(2).get('a'), 3
       equal underlying.at(3).get('a'), 4
 
-    c = new ReversedCollection(underlying)
+    c = new Reversed(underlying)
     equal c.length, 4
     equal c.at(0).get('a'), 4
     equal c.at(1).get('a'), 3
@@ -731,7 +731,7 @@ describe 'ReversedCollection', ->
       equal underlying.at(3).get('a'), 4
 
     underlying = new Collection []
-    c = new ReversedCollection(underlying)
+    c = new Reversed(underlying)
     equal c.length, 0
     underlying.reset(underlyingItems)
     equal c.length, 4
@@ -745,7 +745,7 @@ describe 'ReversedCollection', ->
     underlying = new Collection [
       {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
     ]
-    c = new ReversedCollection(underlying)
+    c = new Reversed(underlying)
     equal c.length, 4
     equal c.at(0).get('a'), 4
     equal c.at(1).get('a'), 3
@@ -765,7 +765,7 @@ describe 'ReversedCollection', ->
 
   it 'responds to an underlying add event', ->
     underlying = new Collection []
-    c = new ReversedCollection(underlying)
+    c = new Reversed(underlying)
     equal c.length, 0
 
     underlying.add {a: 1, b: 2}
@@ -796,7 +796,7 @@ describe 'ReversedCollection', ->
     underlying = new Collection [],
       comparator: (model) -> model.get('b')
     underlying.add underlyingItems, sort: false
-    c = new ReversedCollection(underlying)
+    c = new Reversed(underlying)
     equal c.length, 4
     equal c.at(0).get('a'), 4
     equal c.at(1).get('a'), 3

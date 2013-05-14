@@ -1,7 +1,7 @@
 {Collection} = require 'backbone'
 {extend} = require 'underscore'
 
-class exports.SortedCollection extends Collection
+class exports.Sorted extends Collection
 
   constructor: (underlying, options = {}) ->
     throw new Error("provide a comparator") unless options.comparator
@@ -19,7 +19,7 @@ class exports.SortedCollection extends Collection
       add: (model) =>
         this.add(model)
 
-class exports.ReversedCollection extends exports.SortedCollection
+class exports.Reversed extends exports.Sorted
 
   constructor: (underlying, options = {}) ->
     options.comparator = (model) -> - underlying.indexOf(model)
