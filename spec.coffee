@@ -1,5 +1,6 @@
 {Collection, Model} = require 'backbone'
-{CappedCollection, FilteredCollection} = require './src/index'
+{CappedCollection, FilteredCollection,
+  SortedCollection, ReversedCollection} = require './src/index'
 {equal, deepEqual, ok} = require 'assert'
 
 describe 'CappedCollection', ->
@@ -328,7 +329,7 @@ describe 'FilteredCollection', ->
       equal underlying.at(2).get('a'), 3
       equal underlying.at(3).get('a'), 4
 
-    it 'caps on reset', ->
+    it 'filters on reset', ->
       underlying = new Collection []
       c = new FilteredCollection underlying,
         filter: (model) -> model.get('a') < 4 and model.get('a') > 1
@@ -595,3 +596,214 @@ describe 'FilteredCollection', ->
       ok diff.contains(a)
       ok diff.contains(b)
       ok diff.contains(c)
+
+describe 'SortedCollection', ->
+
+  it 'initializes from a collection', ->
+
+    underlying = new Collection [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+
+    assertUnderlying = (underlying) ->
+      equal underlying.length, 4
+      equal underlying.at(0).get('a'), 1
+      equal underlying.at(1).get('a'), 2
+      equal underlying.at(2).get('a'), 3
+      equal underlying.at(3).get('a'), 4
+
+    c = new SortedCollection underlying,
+      comparator: (model) -> model.get('b')
+    equal c.length, 4
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 1
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 4
+    assertUnderlying(underlying)
+
+  it 'responds to an underlying reset event', ->
+
+    underlyingItems = [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+
+    assertUnderlying = (underlying) ->
+      equal underlying.length, 4
+      equal underlying.at(0).get('a'), 1
+      equal underlying.at(1).get('a'), 2
+      equal underlying.at(2).get('a'), 3
+      equal underlying.at(3).get('a'), 4
+
+    underlying = new Collection []
+    c = new SortedCollection underlying,
+      comparator: (model) -> model.get('b')
+    equal c.length, 0
+    underlying.reset(underlyingItems)
+    equal c.length, 4
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 1
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 4
+    assertUnderlying(underlying)
+
+  it 'responds to an underlying remove event', ->
+    underlying = new Collection [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+    c = new SortedCollection underlying,
+      comparator: (model) -> model.get('b')
+    equal c.length, 4
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 1
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 4
+
+    underlying.remove(underlying.at(2))
+    equal c.length, 3
+    equal c.at(0).get('a'), 1
+    equal c.at(1).get('a'), 2
+    equal c.at(2).get('a'), 4
+
+    underlying.remove(underlying.at(0))
+    equal c.length, 2
+    equal c.at(0).get('a'), 2
+    equal c.at(1).get('a'), 4
+
+  it 'responds to an underlying add event', ->
+    underlying = new Collection []
+    c = new SortedCollection underlying,
+      comparator: (model) -> model.get('b')
+    equal c.length, 0
+
+    underlying.add {a: 1, b: 2}
+    equal underlying.length, 1
+    equal c.length, 1
+
+    underlying.add [{a: 2, b: 3}, {a: 3, b: 1}]
+    equal underlying.length, 3
+    equal c.length, 3
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 1
+    equal c.at(2).get('a'), 2
+
+    underlying.add {a: 4, b: 4}, at: 1
+    equal underlying.length, 4
+    equal c.length, 4
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 1
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 4
+
+describe 'ReversedCollection', ->
+
+  it 'initializes from a collection', ->
+
+    underlying = new Collection [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+
+    assertUnderlying = (underlying) ->
+      equal underlying.length, 4
+      equal underlying.at(0).get('a'), 1
+      equal underlying.at(1).get('a'), 2
+      equal underlying.at(2).get('a'), 3
+      equal underlying.at(3).get('a'), 4
+
+    c = new ReversedCollection(underlying)
+    equal c.length, 4
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 3
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 1
+    assertUnderlying(underlying)
+
+  it 'responds to an underlying reset event', ->
+
+    underlyingItems = [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+
+    assertUnderlying = (underlying) ->
+      equal underlying.length, 4
+      equal underlying.at(0).get('a'), 1
+      equal underlying.at(1).get('a'), 2
+      equal underlying.at(2).get('a'), 3
+      equal underlying.at(3).get('a'), 4
+
+    underlying = new Collection []
+    c = new ReversedCollection(underlying)
+    equal c.length, 0
+    underlying.reset(underlyingItems)
+    equal c.length, 4
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 3
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 1
+    assertUnderlying(underlying)
+
+  it 'responds to an underlying remove event', ->
+    underlying = new Collection [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+    c = new ReversedCollection(underlying)
+    equal c.length, 4
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 3
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 1
+
+    underlying.remove(underlying.at(2))
+    equal c.length, 3
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 2
+    equal c.at(2).get('a'), 1
+
+    underlying.remove(underlying.at(0))
+    equal c.length, 2
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 2
+
+  it 'responds to an underlying add event', ->
+    underlying = new Collection []
+    c = new ReversedCollection(underlying)
+    equal c.length, 0
+
+    underlying.add {a: 1, b: 2}
+    equal underlying.length, 1
+    equal c.length, 1
+
+    underlying.add [{a: 2, b: 3}, {a: 3, b: 1}]
+    equal underlying.length, 3
+    equal c.length, 3
+    equal c.at(0).get('a'), 3
+    equal c.at(1).get('a'), 2
+    equal c.at(2).get('a'), 1
+
+    underlying.add {a: 4, b: 4}
+    equal underlying.length, 4
+    equal c.length, 4
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 3
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 1
+
+  it 'responds to an underlying sort event', ->
+
+    underlyingItems = [
+      {a: 1, b: 2}, {a: 2, b: 3}, {a: 3, b: 1}, {a: 4, b: 4}
+    ]
+
+    underlying = new Collection [],
+      comparator: (model) -> model.get('b')
+    underlying.add underlyingItems, sort: false
+    c = new ReversedCollection(underlying)
+    equal c.length, 4
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 3
+    equal c.at(2).get('a'), 2
+    equal c.at(3).get('a'), 1
+    underlying.sort()
+    equal c.at(0).get('a'), 4
+    equal c.at(1).get('a'), 2
+    equal c.at(2).get('a'), 1
+    equal c.at(3).get('a'), 3
