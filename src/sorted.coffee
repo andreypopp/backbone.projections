@@ -26,3 +26,6 @@ class exports.Reversed extends exports.Sorted
     super(underlying, options)
     this.listenTo this.underlying,
       sort: this.sort
+
+exports.SortedCollection = exports.Sorted
+exports.ReversedCollection = exports.Reversed

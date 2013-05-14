@@ -53,3 +53,5 @@ class exports.Capped extends Collection
       this.options.cap = cap
       capped = this._capped(this.underlying.models)
       this.add(capped.slice(this.length, this.options.cap))
+
+exports.CappedCollection = exports.Capped

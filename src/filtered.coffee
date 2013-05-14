@@ -35,3 +35,5 @@ class exports.Filtered extends Collection
       this.remove(model) unless this.options.filter(model)
     else
       this.add(model) if this.options.filter(model)
+
+exports.FilteredCollection = exports.Filtered
