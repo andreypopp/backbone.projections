@@ -23,9 +23,15 @@ class exports.FilteredCollection extends Collection
       add: (model) =>
         this.add(model) if this.options.filter(model)
       change: (model) =>
-        if this.contains(model)
-          this.remove(model) unless this.options.filter(model)
-        else
-          this.add(model) if this.options.filter(model)
+        this.decideOn(model)
       sort: =>
         this.sort() if this.comparator.induced
+
+  update: ->
+    this.decideOn(model) for model in this.underlying.models
+
+  decideOn: (model) ->
+    if this.contains(model)
+      this.remove(model) unless this.options.filter(model)
+    else
+      this.add(model) if this.options.filter(model)

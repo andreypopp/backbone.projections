@@ -1,6 +1,6 @@
-{Collection} = require 'backbone'
+{Collection, Model} = require 'backbone'
 {CappedCollection, FilteredCollection} = require './src/index'
-{equal, deepEqual} = require 'assert'
+{equal, deepEqual, ok} = require 'assert'
 
 describe 'CappedCollection', ->
 
@@ -508,3 +508,29 @@ describe 'FilteredCollection', ->
       underlying.sort()
       equal c.at(0).get('a'), 3
       equal c.at(1).get('a'), 2
+
+  describe 'implementation of difference between two collections', ->
+
+    class Difference extends FilteredCollection
+      constructor: (underlying, subtrahend, options = {}) ->
+        options.filter = (model) -> not subtrahend.contains(model)
+        super(underlying, options)
+        this.listenTo subtrahend, 'add remove reset', this.update.bind(this)
+
+    a = new Model()
+    b = new Model()
+    c = new Model()
+    d = new Model()
+
+    underlying = new Collection [a, b, c]
+    subtrahend = new Collection [b, c, d]
+
+    diff = new Difference(underlying, subtrahend)
+
+    it 'contains models from minuend', ->
+      ok diff.contains(a)
+      equal diff.length, 1
+
+    it 'does not contain models from subtrahend', ->
+      ok not diff.contains(b)
+      ok not diff.contains(c)
