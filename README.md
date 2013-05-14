@@ -10,6 +10,24 @@ collection.
 Currently there are two available projections — `CappedCollection` and
 `FilteredCollection`.
 
+## SortedCollection and ReversedCollection
+
+`SortedCollection` provides a projection which maintains its own order. You are
+required to provide a comparator:
+
+    {SortedCollection} = require 'backbone.projections'
+
+    collection = new Collection([...])
+    sorted = new SortedCollection(collection, comparator: (m) -> m.get('score'))
+
+There's also a special case `ReversedCollection` which maintains order reversed
+to an underlying collection order.
+
+    {ReversedCollection} = require 'backbone.projections'
+
+    collection = new Collection([...])
+    sorted = new ReversedCollection(collection)
+
 ## CappedCollection
 
 `CappedCollection` provides a projection of a limited number of elements from an
