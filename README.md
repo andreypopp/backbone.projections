@@ -48,6 +48,48 @@ The example above will create a `todaysPosts` projection which only contains
 By default this projection tries to maintain the order of models
 induced by underlying collection but you can also pass custom comparator.
 
+## Complex predicates which depend on some changing data
+
+`FilteredCollection` can be a base for complex projection which includes more
+than a single collection, as an example we will implement a difference between
+two collections:
+
+    class Difference extends FilteredCollection
+      constructor: (underlying, subtrahend, options = {}) ->
+        options.filter = (model) -> not subtrahend.contains(model)
+        super(underlying, options)
+        this.listenTo subtrahend, 'add remove reset', this.update.bind(this)
+
+
+    a = new Model()
+    b = new Model()
+    c = new Model()
+    d = new Model()
+
+    underlying = new Collection [a, b, c]
+    subtrahend = new Collection [b, c, d]
+
+    diff = new Difference(underlying, subtrahend)
+
+This way `diff` will contain only models from `underlying` which are not members
+of `subtrahend` collection and what's more important `diff` will track changes
+in `subtrahend` and update itself accordingly.
+
+But that's a quick'n'dirty way of implementing this because on each change to
+`subtrahend` the difference will reexamine entire `underlying` collection. Let's
+implement this in a more efficient way:
+
+    class EfficientDifference extends FilteredCollection
+      constructor: (underlying, subtrahend, options = {}) ->
+        options.filter = (model) -> not subtrahend.contains(model)
+        super(underlying, options)
+        this.listenTo subtrahend,
+          add: (model) =>
+            this.remove(model) if this.contains(model)
+          remove: (model) =>
+            this.add(model) if this.underlying.contains(model)
+          reset: this.update.bind(this)
+
 ## Composing projections
 
 You can compose different projection which each other, for example

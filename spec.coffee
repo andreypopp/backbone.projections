@@ -509,7 +509,7 @@ describe 'FilteredCollection', ->
       equal c.at(0).get('a'), 3
       equal c.at(1).get('a'), 2
 
-  describe 'implementation of difference between two collections', ->
+  describe 'implementation of a difference between two collections', ->
 
     class Difference extends FilteredCollection
       constructor: (underlying, subtrahend, options = {}) ->
@@ -526,6 +526,52 @@ describe 'FilteredCollection', ->
     subtrahend = new Collection [b, c, d]
 
     diff = new Difference(underlying, subtrahend)
+
+    it 'contains models from minuend', ->
+      equal diff.length, 1
+      ok diff.contains(a)
+
+    it 'does not contain models from subtrahend', ->
+      ok not diff.contains(b)
+      ok not diff.contains(c)
+
+    it 'updates on changes in subtrahend', ->
+      subtrahend.remove(b)
+      equal diff.length, 2
+      ok diff.contains(b)
+
+      subtrahend.add(a)
+      equal diff.length, 1
+      ok not diff.contains(a)
+
+      subtrahend.reset([d])
+      equal diff.length, 3
+      ok diff.contains(a)
+      ok diff.contains(b)
+      ok diff.contains(c)
+  
+  describe 'implementation of an efficient difference between two collections', ->
+
+    class EfficientDifference extends FilteredCollection
+      constructor: (underlying, subtrahend, options = {}) ->
+        options.filter = (model) -> not subtrahend.contains(model)
+        super(underlying, options)
+        this.listenTo subtrahend,
+          add: (model) =>
+            this.remove(model) if this.contains(model)
+          remove: (model) =>
+            this.add(model) if this.underlying.contains(model)
+          reset: this.update.bind(this)
+
+    a = new Model()
+    b = new Model()
+    c = new Model()
+    d = new Model()
+
+    underlying = new Collection [a, b, c]
+    subtrahend = new Collection [b, c, d]
+
+    diff = new EfficientDifference(underlying, subtrahend)
 
     it 'contains models from minuend', ->
       equal diff.length, 1
