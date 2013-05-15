@@ -1,3 +1,7 @@
+See [blog post][] for examples and demos.
+
+[blog post]: http://andreypopp.com/posts/2013-05-15-projections-for-backbone-collections.html
+
 # Backbone.Projections
 
 Backbone.Projections is a library of projections for Backbone.Collection.
