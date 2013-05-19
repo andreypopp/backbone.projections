@@ -1,13 +1,3 @@
-See [blog post][] for examples and demos.
-
-[blog post]: http://andreypopp.com/posts/2013-05-15-projections-for-backbone-collections.html
-
-Install with npm, use with [Browserify][]:
-
-    % npm install backbone.projections
-
-[Browserify]: http://browserify.org
-
 # Backbone.Projections
 
 Backbone.Projections is a library of projections for Backbone.Collection.
@@ -19,6 +9,27 @@ collection.
 
 Currently there are two available projections — `Capped` and
 `Filtered`.
+
+See [blog post][] for examples and demos.
+
+[blog post]: http://andreypopp.com/posts/2013-05-15-projections-for-backbone-collections.html
+
+# Usage with Browserify
+
+Install with npm, use with [Browserify][]:
+
+    % npm install backbone.projections
+
+and in your code
+
+    BackboneProjections = require 'backbone.projections'
+
+[Browserify]: http://browserify.org
+
+# Usage with "globals"
+
+Grab a copy of backbone.projections.js which exports `BackboneProjections` as a
+global.
 
 ## Sorted and Reversed
 

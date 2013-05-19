@@ -13,7 +13,14 @@
     "chai": "",
     "jsdom": "",
     "jquery": "",
-    "semver": ""
+    "jqueryify": "",
+    "semver": "",
+    "phantomjs": "",
+    "mocha-phantomjs": "~1.1.2",
+    "module-deps": "",
+    "browser-pack": "",
+    "through": "",
+    "umd": ""
   },
   "repository": {
     "type": "git",

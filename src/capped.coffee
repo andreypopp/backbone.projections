@@ -1,5 +1,5 @@
-{Collection} = require 'backbone'
-{toArray, extend} = require 'underscore'
+{Collection} = window?.Backbone or require 'backbone'
+{toArray, extend} = window?._ or require 'underscore'
 
 inducedOrdering = (collection) ->
   func = (model) -> collection.indexOf(model)

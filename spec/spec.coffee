@@ -1,7 +1,7 @@
-{Collection, Model} = require 'backbone'
+{Collection, Model} = window?.Backbone or require 'backbone'
 {Capped, Filtered,
-  Sorted, Reversed} = require './src/index'
-{equal, deepEqual, ok} = require 'assert'
+  Sorted, Reversed} = window?.BackboneProjections or require '../lib/index'
+{equal, deepEqual, ok} = window?.assert or require 'assert'
 
 describe 'Capped', ->
 
@@ -550,7 +550,7 @@ describe 'Filtered', ->
       ok diff.contains(a)
       ok diff.contains(b)
       ok diff.contains(c)
-  
+
   describe 'implementation of an efficient difference between two collections', ->
 
     class EfficientDifference extends Filtered

@@ -4,6 +4,9 @@ LIB = $(SRC:src/%.coffee=lib/%.js)
 
 build: $(LIB)
 
+umd: build
+	./build-umd lib/index.js > backbone.projections.js
+
 lib/%.js: src/%.coffee
 	@mkdir -p $(@D)
 	@$(BIN)/coffee -bcp $< > $@
@@ -15,7 +18,7 @@ install link:
 	@npm $@
 
 test:
-	@$(BIN)/mocha -b -R spec --compilers coffee:coffee-script spec.coffee
+	@$(MAKE) -Cspec test
 
 release-patch: build test
 	@$(call release,patch)

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Backbone.Projections Test Suite</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="./jquery.js"></script>
+
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script>mocha.setup("bdd")</script>
+    <script src="./assert.js"></script>
+
+    <script src="../node_modules/underscore/underscore.js"></script>
+    <script src="../node_modules/backbone/backbone.js"></script>
+    <script src="../backbone.projections.js"></script>
+    <script src="./spec.js"></script>
+
+    <script>
+      if (window.mochaPhantomJS)
+        mochaPhantomJS.run();
+      else
+        mocha.run();
+    </script>
+  </body>
+</html>
