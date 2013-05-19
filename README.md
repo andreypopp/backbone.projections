@@ -28,8 +28,10 @@ and in your code
 
 # Usage with "globals"
 
-Grab a copy of backbone.projections.js which exports `BackboneProjections` as a
+Grab a copy of [backbone.projections.js][] which exports `BackboneProjections` as a
 global.
+
+[backbone.projections.js]: https://raw.github.com/andreypopp/backbone.projections/master/backbone.projections.js
 
 ## Sorted and Reversed
 
