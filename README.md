@@ -7,8 +7,8 @@ underlying collection and stays in sync with it. That means that projection will
 respond correspondingly to `add`, `remove` and other events from an underlying
 collection.
 
-Currently there are two available projections — `Capped` and
-`Filtered`.
+Currently there are four available projections — `Sorted`, `Reversed`, `Capped`
+and `Filtered`.
 
 See [blog post][] for examples and demos.
 
