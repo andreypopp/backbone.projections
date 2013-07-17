@@ -1,6 +1,6 @@
 {Collection, Model} = window?.Backbone or require 'backbone'
 {Capped, Filtered,
-  Sorted, Reversed} = window?.BackboneProjections or require '../lib/index'
+  Sorted, Reversed} = window?.BackboneProjections or require '../index'
 {equal, deepEqual, ok} = window?.assert or require 'assert'
 
 describe 'Capped', ->

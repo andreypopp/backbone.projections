@@ -1,13 +1,16 @@
 BIN = ./node_modules/.bin
-SRC = $(wildcard src/*.coffee)
-LIB = $(SRC:src/%.coffee=lib/%.js)
+SRC = $(wildcard *.coffee)
+LIB = $(SRC:%.coffee=%.js)
 
 build: $(LIB)
 
 umd: build
-	./build-umd lib/index.js > backbone.projections.js
+	./build-umd index.js > backbone.projections.js
 
-lib/%.js: src/%.coffee
+docs::
+	sphinx-npm -Dhtml_theme_path=. -Dhtml_theme=noisy . ./docs
+
+%.js: %.coffee
 	@mkdir -p $(@D)
 	@$(BIN)/coffee -bcp $< > $@
 

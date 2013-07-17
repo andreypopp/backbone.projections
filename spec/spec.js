@@ -5,7 +5,7 @@ var Capped, Collection, Filtered, Model, Reversed, Sorted, deepEqual, equal, ok,
 
 _ref = (typeof window !== "undefined" && window !== null ? window.Backbone : void 0) || require('backbone'), Collection = _ref.Collection, Model = _ref.Model;
 
-_ref1 = (typeof window !== "undefined" && window !== null ? window.BackboneProjections : void 0) || require('../lib/index'), Capped = _ref1.Capped, Filtered = _ref1.Filtered, Sorted = _ref1.Sorted, Reversed = _ref1.Reversed;
+_ref1 = (typeof window !== "undefined" && window !== null ? window.BackboneProjections : void 0) || require('../index'), Capped = _ref1.Capped, Filtered = _ref1.Filtered, Sorted = _ref1.Sorted, Reversed = _ref1.Reversed;
 
 _ref2 = (typeof window !== "undefined" && window !== null ? window.assert : void 0) || require('assert'), equal = _ref2.equal, deepEqual = _ref2.deepEqual, ok = _ref2.ok;
 
